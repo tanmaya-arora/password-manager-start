@@ -43,8 +43,25 @@ def generate_password():
     if password_entry.get() != '':
         password_entry.delete(0, END)
     password_entry.insert(0, password)
-# ---------------------------- SAVE PASSWORD ------------------------------- #
+# ---------------------------- SEARCH PASSWORD ------------------------------- #
 
+
+def find_password():
+    if web_entry.get() == '':
+        messagebox.showwarning("Website name", "Website name is required for searching the stored password")
+    else:
+        try:
+            with open('Passwords.json', 'r') as f:
+                dataa = json.load(f)
+                website = web_entry.get()
+                if website in dataa:
+                    user_email = dataa[website]['email']
+                    password = dataa[website]['password']
+                    messagebox.showinfo(web_entry.get(), f"Email: {user_email} Password: {password}")
+                else:
+                    messagebox.showwarning("Not found", f"Website details for {website} not stored")
+        except FileNotFoundError:
+            messagebox.showerror("File not found", "Either file does not exist or has been deleted")
 # ---------------------------- UI SETUP ------------------------------- #
 
 
@@ -101,6 +118,9 @@ password_label.grid(column=1, row=5)
 web_entry = Entry(width=52)
 web_entry.focus()
 web_entry.grid(column=2, row=3, columnspan=2)
+
+search_button = Button(text="Search", width=14, command=find_password)
+search_button.grid(column=3, row=3)
 
 
 email_entry = Entry(width=52)
